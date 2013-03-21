@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!-- DTD de la cinematheque -->
+<!--
+  Auteurs :
+    Guillaume Harvey
+    Kevin Labrie
+    Mathieu Larocque
+    Vincent Philippon
+-->
+
+<!ELEMENT cinematheque (personne*,film*,roleFilm*,serie*,episode*,roleEpisode*)>
+
+<!-- Personne -->
+<!ELEMENT personne>
+7<!ATTLIST personne nom CDATA #REQUIRED>
+7<!ATTLIST personne dateNaissance CDATA #REQUIRED>
+7<!ATTLIST personne lieuNaissance CDATA #IMPLIED>
+7<!ATTLIST personne sexe CDATA #REQUIRED>
+
+<!-- Film -->
+<!ELEMENT film>
+<!ATTLIST film titre CDATA #REQUIRED>
+<!ATTLIST film dateSortie CDATA #REQUIRED>
+<!ATTLIST film description CDATA #IMPLIED>
+<!ATTLIST film duree CDATA #IMPLIED>
+<!ATTLIST film realisateur CDATA #REQUIRED>
+
+<!-- RoleFilm -->
+<!ELEMENT roleFilm>
+<!ATTLIST roleFilm nomActeur CDATA #REQUIRED>
+<!ATTLIST roleFilm roleActeur CDATA #REQUIRED>
+<!ATTLIST roleFilm filmTitre CDATA #REQUIRED>
+<!ATTLIST roleFilm anneeSortie CDATA #REQUIRED>
+
+<!-- Serie --> 
+<!ELEMENT serie>
+<!ATTLIST serie titre CDATA #REQUIRED>
+<!ATTLIST serie anneeSortie CDATA #REQUIRED>
+<!ATTLIST serie realisateur CDATA #REQUIRED>
+<!ATTLIST serie description CDATA #IMPLIED>
+<!ATTLIST serie nbSaison CDATA #REQUIRED>
+
+<!-- Episode -->
+<!ELEMENT episode>
+<!ATTLIST episode titre CDATA #REQUIRED>
+<!ATTLIST episode titreSerie CDATA #REQUIRED>
+<!ATTLIST episode anneeSortieSerie CDATA #REQUIRED>
+<!ATTLIST episode noSaison CDATA #REQUIRED>
+<!ATTLIST episode noEpisode CDATA #REQUIRED>
+<!ATTLIST episode description CDATA #IMPLIED>
+<!ATTLIST episode dateDiffusion CDATA #REQUIRED>
+
+<!-- RoleEpisode -->
+<!ELEMENT roleEpisode>
+<!ATTLIST roleEpisode nomActeur CDATA #REQUIRED>
+<!ATTLIST roleEpisode roleActeur CDATA #REQUIRED>
+<!ATTLIST roleEpisode titreSerie CDATA #REQUIRED>
+<!ATTLIST roleEpisode noSaison CDATA #REQUIRED>
+<!ATTLIST roleEpisode noEpisode CDATA #REQUIRED>
+<!ATTLIST roleEpisode anneeSortieSerie CDATA #REQUIRED>
+
