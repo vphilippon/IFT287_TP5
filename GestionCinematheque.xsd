@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding='ISO-8859-1' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:ift287:cinematheque:element" targetNamespace="urn:ift287:cinematheque:element" elementFormDefault="qualified">
+	
+	<xsd:element name="cinematheque" type="Cinematheque"/>
+	<xsd:complexType name="Cinematheque">
+		<xsd:sequence>
+			<xsd:element name="personne" type="Personne"  minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="film" type="Film"  minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="roleFilm" type="RoleFilm"  minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="serie" type="Serie"  minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="episode" type="Episode"  minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="roleEpisode" type="RoleEpisode"  minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+    </xsd:complexType>
+	
+	<xsd:complexType name="Personne">
+		<xsd:attribute name="nom" type="xsd:string" use="required"/>
+		<xsd:attribute name="dateNaissance" type="xsd:date"/>
+		<xsd:attribute name="lieuNaissance" type="xsd:date"/>
+		<xsd:attribute name="sexe">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minInclusive value="0"/>
+					<xsd:maxInclusive value="1"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+    </xsd:complexType>
+	
+	<xsd:complexType name="Film">
+		<xsd:attribute name="titre" type="xsd:string" use="required"/>
+		<xsd:attribute name="dateSortie" type="xsd:date" use="required"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="duree">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minInclusive value="0"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>		
+		<xsd:attribute name="realisateur" type="xsd:int"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="RoleFilm">
+		<xsd:attribute name="nomActeur" type="xsd:string" use="required"/>
+		<xsd:attribute name="roleActeur" type="xsd:string" use="required"/>
+		<xsd:attribute name="filmTitre" type="xsd:string" use="required"/>
+		<xsd:attribute name="anneeSortie" type="xsd:date" use="required"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Serie">
+		<xsd:attribute name="titre" type="xsd:string" use="required"/>
+		<xsd:attribute name="anneeSortie" type="xsd:date" use="required"/>
+		<xsd:attribute name="realisateur" type="xsd:string"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="nbSaison" type="xsd:int">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minExclusive value="0"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Episode">
+		<xsd:attribute name="titre" type="xsd:string" use="required"/>
+		<xsd:attribute name="titreSerie" type="xsd:string" use="required"/>
+		<xsd:attribute name="anneeSortieSerie" type="xsd:date" use="required"/>
+		<xsd:attribute name="noSaison" type="xsd:int" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minExclusive value="0"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="noEpisode" type="xsd:int" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minExclusive value="0"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="dateDiffusion" type="xsd:date"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="RoleEpisode">
+		<xsd:attribute name="nomActeur" type="xsd:string" use="required"/>
+		<xsd:attribute name="roleActeur" type="xsd:string" use="required"/>
+		<xsd:attribute name="titreSerie" type="xsd:string" use="required"/>
+		<xsd:attribute name="titreEpisode" type="xsd:string" use="required"/>
+		<xsd:attribute name="noSaison" type="xsd:int" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minExclusive value="0"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="noEpisode" type="xsd:int" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:int">
+					<xsd:minExclusive value="0"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="anneeSortieSerie" type="xsd:date" use="required"/>
+	</xsd:complexType>
+</schema>
