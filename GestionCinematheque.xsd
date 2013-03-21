@@ -105,4 +105,4 @@
 		</xsd:attribute>
 		<xsd:attribute name="anneeSortieSerie" type="xsd:date" use="required"/>
 	</xsd:complexType>
-</schema>
+</xsd:schema>
