@@ -1,5 +1,16 @@
 package tp5;
 
+/*
+ * Projet : Tp5
+ *
+ * Membres :
+ * - Guillaume Harvey 12 059 595
+ * - Kevin Labrie 12 113 777
+ * - Vincent Philippon 12 098 838
+ * - Mathieu Larocque 10 129 032
+ * 
+ */
+
 import java.io.*;
 import java.sql.*;
 
@@ -10,23 +21,24 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
+
 public class CinemathequeXMLToBD extends DefaultHandler {
 
     private SAXParser  saxParser;
     private File       fichier;
     private GestionTp5 gestionTp5;
 
-    public static void main(String argv[]) throws ParserConfigurationException,
-            SAXException, IOException, SQLException {
-        if (argv.length < 4) {
-            System.err.println("Usage: CinemathequeXMLToBD <nom-bd> <user-id-bd> <mot-de-passe> <fichier-xml-entree>");
-            System.exit(1);
-        }
-
-        CinemathequeXMLToBD handler = new CinemathequeXMLToBD(argv[0], argv[1], argv[2],
-                argv[3]);
-        handler.convert();
-    }
+    // POUR TEST UNIQUEMENT
+//    public static void main(String argv[]) throws ParserConfigurationException,
+//            SAXException, IOException, SQLException {
+//        if (argv.length < 4) {
+//            System.err.println("Usage: CinemathequeXMLToBD <nom-bd> <user-id-bd> <mot-de-passe> <fichier-xml-entree>");
+//            System.exit(1);
+//        }
+//
+//        CinemathequeXMLToBD handler = new CinemathequeXMLToBD(argv[0], argv[1], argv[2], argv[3]);
+//        handler.convert();
+//    }
 
     public CinemathequeXMLToBD(String bd, String user, String mdp, String fich)
             throws SQLException {

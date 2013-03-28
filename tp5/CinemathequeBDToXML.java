@@ -1,5 +1,16 @@
 package tp5;
 
+/*
+ * Projet : Tp5
+ *
+ * Membres :
+ * - Guillaume Harvey 12 059 595
+ * - Kevin Labrie 12 113 777
+ * - Vincent Philippon 12 098 838
+ * - Mathieu Larocque 10 129 032
+ * 
+ */
+
 import java.io.IOException;
 import java.sql.*;
 
@@ -23,17 +34,18 @@ public class CinemathequeBDToXML {
     private PreparedStatement stmSelectEpisode;
     private PreparedStatement stmSelectRoleEpisode;
 
-    public static void main(String argv[]) throws ParserConfigurationException,
-            SAXException, IOException, SQLException {
-        if (argv.length < 4) {
-            System.err.println("Usage: CinemathequeBDToXML <nom-bd> <user-id-bd> <mot-de-passe> <fichier-xml-sortie>");
-            System.exit(1);
-        }
-
-        CinemathequeBDToXML handler = new CinemathequeBDToXML(argv[0], argv[1], argv[2],
-                argv[3]);
-        handler.convert();
-    }
+    // POUR TEST UNIQUEMENT
+//    public static void main(String argv[]) throws ParserConfigurationException,
+//            SAXException, IOException, SQLException {
+//        if (argv.length < 4) {
+//            System.err.println("Usage: CinemathequeBDToXML <nom-bd> <user-id-bd> <mot-de-passe> <fichier-xml-sortie>");
+//            System.exit(1);
+//        }
+//
+//        CinemathequeBDToXML handler = new CinemathequeBDToXML(argv[0], argv[1], argv[2],
+//                argv[3]);
+//        handler.convert();
+//    }
 
     public CinemathequeBDToXML(String bd, String user, String pwd, String nomFichier)
             throws SQLException {
