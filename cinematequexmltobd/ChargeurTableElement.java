@@ -31,7 +31,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
-import tp3.Connexion;
+import tp5.Connexion;
 
 public class ChargeurTableElement extends DefaultHandler {
 	private Connexion conn;
