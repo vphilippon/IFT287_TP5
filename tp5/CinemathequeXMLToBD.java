@@ -6,10 +6,11 @@ import java.sql.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class CinematequeXMLToBD extends DefaultHandler {
+public class CinemathequeXMLToBD extends DefaultHandler {
 
     private SAXParser  saxParser;
     private File       fichier;
@@ -17,17 +18,17 @@ public class CinematequeXMLToBD extends DefaultHandler {
 
     public static void main(String argv[]) throws ParserConfigurationException,
             SAXException, IOException, SQLException {
-        if (argv.length < 5) {
-            System.err.println("Usage: ChargeurTableAttribut <nom-bd> <user-id-bd> <mot-de-passe> <fichier-xml-entree>");
+        if (argv.length < 4) {
+            System.err.println("Usage: CinemathequeXMLToBD <nom-bd> <user-id-bd> <mot-de-passe> <fichier-xml-entree>");
             System.exit(1);
         }
 
-        CinematequeXMLToBD handler = new CinematequeXMLToBD(argv[1], argv[2], argv[3],
-                argv[4]);
+        CinemathequeXMLToBD handler = new CinemathequeXMLToBD(argv[0], argv[1], argv[2],
+                argv[3]);
         handler.convert();
     }
 
-    public CinematequeXMLToBD(String bd, String user, String mdp, String fich)
+    public CinemathequeXMLToBD(String bd, String user, String mdp, String fich)
             throws SQLException {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();

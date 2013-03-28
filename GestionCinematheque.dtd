@@ -11,14 +11,14 @@
 <!ELEMENT cinematheque (personne*,film*,roleFilm*,serie*,episode*,roleEpisode*)>
 
 <!-- Personne -->
-<!ELEMENT personne>
+<!ELEMENT personne EMPTY>
 <!ATTLIST personne nom CDATA #REQUIRED>
 <!ATTLIST personne dateNaissance CDATA #REQUIRED>
 <!ATTLIST personne lieuNaissance CDATA #IMPLIED>
 <!ATTLIST personne sexe CDATA #REQUIRED>
 
 <!-- Film -->
-<!ELEMENT film>
+<!ELEMENT film EMPTY>
 <!ATTLIST film titre CDATA #REQUIRED>
 <!ATTLIST film dateSortie CDATA #REQUIRED>
 <!ATTLIST film description CDATA #IMPLIED>
@@ -26,14 +26,14 @@
 <!ATTLIST film realisateur CDATA #REQUIRED>
 
 <!-- RoleFilm -->
-<!ELEMENT roleFilm>
+<!ELEMENT roleFilm EMPTY>
 <!ATTLIST roleFilm nomActeur CDATA #REQUIRED>
 <!ATTLIST roleFilm roleActeur CDATA #REQUIRED>
 <!ATTLIST roleFilm filmTitre CDATA #REQUIRED>
 <!ATTLIST roleFilm anneeSortie CDATA #REQUIRED>
 
 <!-- Serie --> 
-<!ELEMENT serie>
+<!ELEMENT serie EMPTY>
 <!ATTLIST serie titre CDATA #REQUIRED>
 <!ATTLIST serie anneeSortie CDATA #REQUIRED>
 <!ATTLIST serie realisateur CDATA #REQUIRED>
@@ -41,7 +41,7 @@
 <!ATTLIST serie nbSaison CDATA #REQUIRED>
 
 <!-- Episode -->
-<!ELEMENT episode>
+<!ELEMENT episode EMPTY>
 <!ATTLIST episode titre CDATA #REQUIRED>
 <!ATTLIST episode titreSerie CDATA #REQUIRED>
 <!ATTLIST episode anneeSortieSerie CDATA #REQUIRED>
@@ -51,7 +51,7 @@
 <!ATTLIST episode dateDiffusion CDATA #REQUIRED>
 
 <!-- RoleEpisode -->
-<!ELEMENT roleEpisode>
+<!ELEMENT roleEpisode EMPTY>
 <!ATTLIST roleEpisode nomActeur CDATA #REQUIRED>
 <!ATTLIST roleEpisode roleActeur CDATA #REQUIRED>
 <!ATTLIST roleEpisode titreSerie CDATA #REQUIRED>
