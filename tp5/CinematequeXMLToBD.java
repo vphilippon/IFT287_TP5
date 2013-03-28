@@ -8,18 +8,12 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
-import tp5.Connexion;
 
 public class CinematequeXMLToBD extends DefaultHandler {
 
-    private static Connexion         conn;
-
-    private static PreparedStatement stmtAjouterFilm;
-    private static PreparedStatement stmtAjouterEpisode;
-    private static PreparedStatement stmtAjouterPersonne;
-    private static PreparedStatement stmtAjouterRoleEpisode;
-    private static PreparedStatement stmtAjouterRoleFilm;
-    private static PreparedStatement stmtAjouterSerie;
+    private SAXParser  saxParser;
+    private File       fichier;
+    private GestionTp5 gestionTp5;
 
     public static void main(String argv[]) throws ParserConfigurationException,
             SAXException, IOException, SQLException {
@@ -28,36 +22,37 @@ public class CinematequeXMLToBD extends DefaultHandler {
             System.exit(1);
         }
 
-        DefaultHandler handler = new CinematequeXMLToBD();
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(true);
-        SAXParser saxParser = factory.newSAXParser();
-        conn = new Connexion("postgres", argv[1], argv[2], argv[3]);
-        init();
-        conn.setAutoCommit(true);
-        saxParser.parse(new File(argv[4]), handler);
-        conn.fermer();
+        CinematequeXMLToBD handler = new CinematequeXMLToBD(argv[1], argv[2], argv[3],
+                argv[4]);
+        handler.convert();
     }
 
-    private static void init() throws SQLException {
-        stmtAjouterFilm = conn.getConnection().prepareStatement(
-                "INSERT INTO Film (titre, dateSortie, description, duree, realisateur) VALUES (?, ?, ?, ?, ?)");
-        stmtAjouterEpisode = conn.getConnection().prepareStatement(
-                "INSERT INTO Episode (titre, titreSerie, anneeSortieSerie,"
-                        + " noSaison, noEpisode, description, dateDiffusion)"
-                        + " VALUES (?, ?, ?, ?, ?, ?, ?)");
-        stmtAjouterPersonne = conn.getConnection().prepareStatement(
-                "INSERT INTO Personne (nom, datenaissance, lieunaissance, sexe) VALUES(?, ?, ?, ?)");
-        stmtAjouterRoleEpisode = conn.getConnection().prepareStatement(
-                "INSERT INTO RoleEpisode (nomActeur, roleActeur, titreSerie,"
-                        + " noSaison, noEpisode, anneeSortieSerie)"
-                        + " VALUES (?, ?, ?, ?, ?, ?)");
-        stmtAjouterRoleFilm = conn.getConnection().prepareStatement(
-                "INSERT INTO RoleFilm (nomActeur, roleActeur, filmTitre, anneeSortie) VALUES (?, ?, ?, ?)");
-        stmtAjouterSerie = conn.getConnection().prepareStatement(
-                "INSERT INTO Serie (titre, anneeSortie, realisateur, description, nbSaison)"
-                        + " VALUES (?, ?, ?, ?, ?)");
+    public CinematequeXMLToBD(String bd, String user, String mdp, String fich)
+            throws SQLException {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setValidating(true);
+            saxParser = factory.newSAXParser();
+            gestionTp5 = new GestionTp5("postgres", bd, user, mdp);
+            fichier = new File(fich);
+        } catch (SAXException e) {
+            System.out.println("Erreur du parser : " + e);
+        } catch (ParserConfigurationException e) {
+            System.out.println("Erreur de configuration du parser : " + e);
+        } catch (Tp5Exception e) {
+            System.out.println("** " + e.toString());
+        }
+    }
 
+    public void convert() throws SQLException {
+        try {
+            saxParser.parse(fichier, this);
+            gestionTp5.fermer();
+        } catch (IOException e) {
+            System.out.println("Erreur a la lecture du fichier : " + e);
+        } catch (SAXException e) {
+            System.out.println("Erreur du parser : " + e);
+        }
     }
 
     /**
@@ -66,112 +61,97 @@ public class CinematequeXMLToBD extends DefaultHandler {
     */
     public void startElement(String namespaceURI, String lName, String qName,
             Attributes attrs) throws SAXException {
-
-        if (qName.equals("personne")) {
-            insertPersonne(attrs);
-        } else if (qName.equals("film")) {
-            insertFilm(attrs);
-        } else if (qName.equals("roleFilm")) {
-            insertRoleFilm(attrs);
-        } else if (qName.equals("serie")) {
-            insertSerie(attrs);
-        } else if (qName.equals("episode")) {
-            insertEpisode(attrs);
-        } else if (qName.equals("roleEpisode")) {
-            insertRoleEpisode(attrs);
+        try {
+            if (qName.equals("personne")) {
+                insertPersonne(attrs);
+            } else if (qName.equals("film")) {
+                insertFilm(attrs);
+            } else if (qName.equals("roleFilm")) {
+                insertRoleFilm(attrs);
+            } else if (qName.equals("serie")) {
+                insertSerie(attrs);
+            } else if (qName.equals("episode")) {
+                insertEpisode(attrs);
+            } else if (qName.equals("roleEpisode")) {
+                insertRoleEpisode(attrs);
+            }
+        } catch (Tp5Exception e) {
+            System.out.println("** " + e.toString());
+        } catch (Exception e) {
+            System.out.println("ERREUR ANORMALE : " + e.toString());
         }
     }
 
-    private void insertPersonne(Attributes attrs) throws SQLException {
+    private void insertPersonne(Attributes attrs) throws Exception {
         String nom = attrs.getValue("nom");
-        Date dateNaissance = Date.valueOf(attrs.getValue("dateNaissance"));
+        Date dateNaissance = new Date(FormatDate.convertirDate(
+                attrs.getValue("dateNaissance")).getTime());
         String lieuNaissance = attrs.getValue("lieuNaissance");
         int sexe = Integer.parseInt(attrs.getValue("sexe"));
 
-        stmtAjouterPersonne.setString(1, nom);
-        stmtAjouterPersonne.setDate(2, dateNaissance);
-        stmtAjouterPersonne.setString(3, lieuNaissance);
-        stmtAjouterPersonne.setInt(4, sexe);
-        stmtAjouterPersonne.executeUpdate();
+        gestionTp5.gestionPersonne.ajoutPersonne(nom, dateNaissance, lieuNaissance, sexe);
     }
 
-    private void insertFilm(Attributes attrs) throws SQLException {
+    private void insertFilm(Attributes attrs) throws Exception {
         String titre = attrs.getValue("titre");
-        Date dateSortie = Date.valueOf(attrs.getValue("dateSortie"));
+        Date dateSortie = new Date(
+                FormatDate.convertirDate(attrs.getValue("dateSortie")).getTime());
         String description = attrs.getValue("description");
         int duree = Integer.parseInt(attrs.getValue("duree"));
         String realisateur = attrs.getValue("realisateur");
 
-        stmtAjouterFilm.setString(1, titre);
-        stmtAjouterFilm.setDate(2, dateSortie);
-        stmtAjouterFilm.setString(3, description);
-        stmtAjouterFilm.setInt(4, duree);
-        stmtAjouterFilm.setString(5, realisateur);
-        stmtAjouterFilm.executeUpdate();
+        gestionTp5.gestionFilm.ajoutFilm(titre, dateSortie, realisateur);
+        gestionTp5.gestionFilm.ajoutDescFilm(titre, dateSortie, description, duree);
     }
 
-    private void insertRoleFilm(Attributes attrs) throws SQLException {
+    private void insertRoleFilm(Attributes attrs) throws Exception {
         String nomActeur = attrs.getValue("nomActeur");
         String roleActeur = attrs.getValue("roleActeur");
         String filmTitre = attrs.getValue("filmTitre");
-        Date anneeSortie = Date.valueOf(attrs.getValue("anneeSortie"));
+        Date anneeSortie = new Date(FormatDate.convertirDate(
+                attrs.getValue("anneeSortie")).getTime());
 
-        stmtAjouterRoleFilm.setString(1, nomActeur);
-        stmtAjouterRoleFilm.setString(2, roleActeur);
-        stmtAjouterRoleFilm.setString(3, filmTitre);
-        stmtAjouterRoleFilm.setDate(4, anneeSortie);
-        stmtAjouterRoleFilm.executeUpdate();
+        gestionTp5.gestionFilm.ajoutActeurFilm(filmTitre, anneeSortie, nomActeur,
+                roleActeur);
     }
 
-    private void insertSerie(Attributes attrs) throws SQLException {
+    private void insertSerie(Attributes attrs) throws Exception {
         String titre = attrs.getValue("titre");
-        Date anneeSortie = Date.valueOf(attrs.getValue("anneeSortie"));
+        Date anneeSortie = new Date(FormatDate.convertirDate(
+                attrs.getValue("anneeSortie")).getTime());
         String realisateur = attrs.getValue("realisateur");
-        String description = attrs.getValue("description");
-        int nbSaison = Integer.parseInt(attrs.getValue("nbSaison"));
+        String description = attrs.getValue("description"); // Jamais utiliser
+        int nbSaison = Integer.parseInt(attrs.getValue("nbSaison")); // Jamais utiliser
 
-        stmtAjouterSerie.setString(1, titre);
-        stmtAjouterSerie.setDate(2, anneeSortie);
-        stmtAjouterSerie.setString(3, realisateur);
-        stmtAjouterSerie.setString(4, description);
-        stmtAjouterSerie.setInt(5, nbSaison);
-        stmtAjouterSerie.executeUpdate();
+        gestionTp5.gestionSerie.ajoutSerie(titre, anneeSortie, realisateur);
     }
 
-    private void insertEpisode(Attributes attrs) throws SQLException {
+    private void insertEpisode(Attributes attrs) throws Exception {
         String titre = attrs.getValue("titre");
         String titreSerie = attrs.getValue("titreSerie");
-        Date anneeSortieSerie = Date.valueOf(attrs.getValue("anneeSortieSerie"));
+        Date anneeSortieSerie = new Date(FormatDate.convertirDate(
+                attrs.getValue("anneeSortieSerie")).getTime());
         int noSaison = Integer.parseInt(attrs.getValue("noSaison"));
         int noEpisode = Integer.parseInt(attrs.getValue("noEpisode"));
         String description = attrs.getValue("description");
-        Date dateDiffusion = Date.valueOf(attrs.getValue("dateDiffusion"));
+        Date dateDiffusion = new Date(FormatDate.convertirDate(
+                attrs.getValue("dateDiffusion")).getTime());
 
-        stmtAjouterEpisode.setString(1, titre);
-        stmtAjouterEpisode.setString(2, titreSerie);
-        stmtAjouterEpisode.setDate(3, anneeSortieSerie);
-        stmtAjouterEpisode.setInt(4, noSaison);
-        stmtAjouterEpisode.setInt(5, noEpisode);
-        stmtAjouterEpisode.setString(6, description);
-        stmtAjouterEpisode.setDate(7, dateDiffusion);
-        stmtAjouterEpisode.executeUpdate();
+        gestionTp5.gestionSerie.ajoutEpisode(titre, titreSerie, anneeSortieSerie,
+                noSaison, noEpisode, description, dateDiffusion);
     }
 
-    private void insertRoleEpisode(Attributes attrs) throws SQLException {
+    private void insertRoleEpisode(Attributes attrs) throws Exception {
         String nomActeur = attrs.getValue("nomActeur");
         String roleActeur = attrs.getValue("roleActeur");
         String titreSerie = attrs.getValue("titreSerie");
         int noSaison = Integer.parseInt(attrs.getValue("noSaison"));
         int noEpisode = Integer.parseInt(attrs.getValue("noEpisode"));
-        Date anneeSortieSerie = Date.valueOf(attrs.getValue("anneeSortieSerie"));
+        Date anneeSortieSerie = new Date(FormatDate.convertirDate(
+                attrs.getValue("anneeSortieSerie")).getTime());
 
-        stmtAjouterRoleEpisode.setString(1, nomActeur);
-        stmtAjouterRoleEpisode.setString(2, roleActeur);
-        stmtAjouterRoleEpisode.setString(3, titreSerie);
-        stmtAjouterRoleEpisode.setInt(4, noSaison);
-        stmtAjouterRoleEpisode.setInt(5, noEpisode);
-        stmtAjouterRoleEpisode.setDate(6, anneeSortieSerie);
-        stmtAjouterRoleEpisode.executeUpdate();
+        gestionTp5.gestionSerie.ajoutRoleAEpisode(titreSerie, anneeSortieSerie, noSaison,
+                noEpisode, nomActeur, roleActeur);
     }
 
     /**
