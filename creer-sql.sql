@@ -1,11 +1,3 @@
-﻿/*
-Creer BD
-	Guillaume Harvey
-	Kevin Labrie
-	Mathieu Larocque
-	Vincent Philippon
-*/
-
 
 /* PERSONNE */
 DROP TABLE IF EXISTS Personne CASCADE;

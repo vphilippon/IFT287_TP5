@@ -1,10 +1,3 @@
-/*
-Select BD
-	Guillaume Harvey
-	Kevin Labrie
-	Mathieu Larocque
-	Vincent Philippon
-*/
 
 SELECT *
 FROM Personne
